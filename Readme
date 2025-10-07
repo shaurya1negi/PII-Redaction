@@ -1,12 +1,1 @@
-To run the PPI redaction pipeline type cmd command :- 
-"python3 redact_file_cli.py" in the directory PII_module
--> Then enter the file_path that you want to redact .The file formate is recommended to be in .jpg or .png or .pdf /.doc.
-
-Note:- 
-->If not satisfied with the final redaction .
-Try updating the OCR parameter in config.py file to the bellow parameters -
-'mag_ratio': 3.5,
-'canvas_size': 1400
-Then save the above configuration and try the redaction process again . 
-
-
+python3 redact_file_cli.py

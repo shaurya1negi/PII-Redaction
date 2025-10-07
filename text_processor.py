@@ -16,7 +16,7 @@ analyzer = AnalyzerEngine(nlp_engine=nlp_engine)
 # spaCy fallback detector uses transformer model
 nlp = spacy.load(config.NLP_CONFIG['models'][0]['model_name'])
 
-def detect_pii_contextual(text: str) -> List[str]: # Contains the PII contextual detection logic on passed text
+def detect_pii_contextual(text: str) -> List[str]:
     """
     contextual PII detection - Microsoft Presidio.
     context and semantic is understood.
@@ -28,16 +28,17 @@ def detect_pii_contextual(text: str) -> List[str]: # Contains the PII contextual
         results = analyzer.analyze(
             text=text,
             entities=[
-			'PERSON', 'EMAIL_ADDRESS', 'PHONE_NUMBER', 'CREDIT_CARD',
-            'IBAN_CODE', 'IP_ADDRESS', 'DATE_TIME', 'LOCATION',
-            'IN_AADHAAR', 'IN_PAN', 'IN_VEHICLE_REGISTRATION', 'IN_PASSPORT'
+                "PERSON", "EMAIL_ADDRESS", "PHONE_NUMBER", "CREDIT_CARD", 
+                "US_SSN", "ORGANIZATION", "LOCATION", "DATE_TIME",
+                "URL", "IP_ADDRESS", "US_BANK_NUMBER", "US_PASSPORT", 
+                "US_DRIVER_LICENSE", "IBAN_CODE"
             ],
             language='en'
         )
         
         # Eentities with confidence abobve 60% are taken (with contextual validation) 
         for result in results:
-            if result.score >= 0.1:  # Only high - confidence detections
+            if result.score >= 0.6:  # Only high-confidence detections
                 entity_text = text[result.start:result.end].strip()
                 
                 # go through entity types while contextually filtering
@@ -110,7 +111,13 @@ def _is_valid_pii_with_context(entity_text: str, entity_type: str, full_text: st
         return True
     
     elif entity_type == "DATE_TIME":
-        return True;
+        # specific date patterns like ued in the military/organizations
+        date_patterns = [
+            r'\d{1,2}[/-]\d{1,2}[/-]\d{2,4}',  # MM/DD/YYYY
+            r'\d{4}[/-]\d{1,2}[/-]\d{1,2}',    # YYYY/MM/DD
+            r'\b\d{1,2}\s+\w+\s+\d{4}\b'      # DD Month YYYY
+        ]
+        return any(re.search(pattern, entity_text) for pattern in date_patterns)
     
     elif entity_type == "URL":
         # URLs if detected, are sensitive
@@ -120,9 +127,8 @@ def _is_valid_pii_with_context(entity_text: str, entity_type: str, full_text: st
         # properly formatted IPs are also sensitive
         return len(entity_text) >= 7  # Minimum for x.x.x.x
     
-    elif entity_type in ['PERSON', 'EMAIL_ADDRESS', 'PHONE_NUMBER', 'CREDIT_CARD',
-            'IBAN_CODE', 'IP_ADDRESS', 'DATE_TIME', 'LOCATION',
-            'IN_AADHAAR', 'IN_PAN', 'IN_VEHICLE_REGISTRATION', 'IN_PASSPORT']:
+    elif entity_type in ["EMAIL_ADDRESS", "PHONE_NUMBER", "CREDIT_CARD", "US_SSN", 
+                        "US_PASSPORT", "US_DRIVER_LICENSE", "US_BANK_NUMBER", "IBAN_CODE"]:
         # consider sensitive if passes confidence threshold
         return True
     

@@ -156,10 +156,16 @@ class FaceRedactor:
     
     def get_face_summary(self, face_data: Dict[str, Any]) -> Dict[str, Any]:
         """Get summary statistics of face detection results"""
+        face_probs = face_data.get('face_probabilities', [])
+        # Filter out None values and ensure we have a valid list
+        if face_probs:
+            face_probs = [p for p in face_probs if p is not None]
+        has_faces = face_probs and len(face_probs) > 0
+        
         return {
-            'total_faces': face_data['num_faces_detected'],
-            'avg_confidence': np.mean(face_data['face_probabilities']) if face_data['face_probabilities'] else 0,
-            'min_confidence': np.min(face_data['face_probabilities']) if face_data['face_probabilities'] else 0,
-            'max_confidence': np.max(face_data['face_probabilities']) if face_data['face_probabilities'] else 0,
-            'face_boxes': face_data['face_boxes']
+            'total_faces': face_data.get('num_faces_detected', 0),
+            'avg_confidence': float(np.mean(face_probs)) if has_faces else 0.0,
+            'min_confidence': float(np.min(face_probs)) if has_faces else 0.0,
+            'max_confidence': float(np.max(face_probs)) if has_faces else 0.0,
+            'face_boxes': face_data.get('face_boxes', [])
         }

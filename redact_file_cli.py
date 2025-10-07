@@ -15,11 +15,10 @@ class PDFRedactionHandler:
         if not os.path.exists(input_path):
             print(f"File not found: {input_path}")
             return None
-        _, ext = os.path.splitext(input_path.lower()) 
+        _, ext = os.path.splitext(input_path.lower())
         output_path = self._get_output_path(input_path, ext)
         print(f"Processing: {input_path}")
         results = self.pipeline.process_document(input_path)
-
         if ext == '.pdf':
             # Standardized PDF: processed with text_processor
             if 'pdf_redacted_path' in results:

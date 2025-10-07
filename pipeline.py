@@ -26,6 +26,7 @@ class PIIPipeline:
     """
     
     def __init__(self, config: PIIConfig = None):
+
         self.config = config or PIIConfig()
         # Initialize all processors with the respective configuration as defined in config.py
         self.ocr_processor = OCRProcessor(self.config)
@@ -126,7 +127,7 @@ class PIIPipeline:
         face_summary = self.face_redactor.get_face_summary(results['face_results'])
         
         return {
-            'input_file': results['input_image_path'],
+            'input_file': results.get('input_image_path') or results.get('input_path', 'Unknown'),
             'output_files': {
                 'ocr_annotated': results['ocr_annotated_path'],
                 'text_redacted': results['text_redacted_path'], 
