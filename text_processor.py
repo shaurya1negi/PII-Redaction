@@ -73,8 +73,8 @@ def _is_valid_pii_with_context(entity_text: str, entity_type: str, full_text: st
         return False
     
     # get 50 characters  pre- and post- current object
-    context_start = max(0, start - 50)
-    context_end = min(len(full_text), end + 50)
+    context_start = max(0, start - 30)
+    context_end = min(len(full_text), end + 30)
     context = full_text[context_start:context_end].lower()
     
     if entity_type == "PERSON":
