@@ -2,6 +2,7 @@
 # ===================================
 
 # Core Dependencies
+#Recommended python version 3.12.3 otherwise facenet dependency failure can occur.
 torch==2.2.2
 torchvision==0.17.2
 # OCR Dependencies  
@@ -11,17 +12,20 @@ opencv-python==4.12.0.88
 presidio-analyzer==2.2.359
 spacy==3.8.7
 https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.4.1/en_core_web_trf-3.4.1-py3-none-any.whl
-# Face Detection
-facenet-pytorch==2.6.0
+
 # Image Processing
-Pillow==10.2.0
+Pillow>=10.2.0
 pdf2image==1.17.0
 # Data Processing
 pandas==2.3.2
-numpy==1.26.4
+numpy>=1.26.4
 # Text Processing
 unidecode==1.4.0
 # Indian NER Support
 presidio-analyzer[transformers]==2.2.359
 # Optional: For better performance
 accelerate==1.10.1
+
+# Face Detection
+facenet-pytorch  # Likely will result in erro so install manually using: pip install facenet-pytorch --no-deps
+
