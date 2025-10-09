@@ -32,6 +32,23 @@ class OCRProcessor:
             **self.config.OCR_CONFIG['parameters']
         )
         
+        # Handle empty OCR results
+        if not ocr_result:
+            print(f"Warning: No text detected in image: {image_path}")
+            original_image = Image.open(image_path).convert("RGB")
+            return {
+                'ocr_results': [],
+                'ocr_dict': {
+                    "text index": [],
+                    "bbox": [],
+                    "text": [],
+                    "confidence": []
+                },
+                'annotated_image_path': None,
+                'original_image': original_image,
+                'image_path': image_path
+            }
+        
         # Index OCR results 
         ocr_indexed = []
         for idx, item in enumerate(ocr_result):
