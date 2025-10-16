@@ -17,7 +17,7 @@ analyzer = AnalyzerEngine(nlp_engine=nlp_engine)
 nlp = spacy.load(config.NLP_CONFIG['models'][0]['model_name'])
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------
-def detect_pii_contextual(text: str) -> List[str]: # Contains the PII contextual detection logic on passed text
+def detect_pii_contextual(text: str) -> List[str]: # Contains the PII contextual detection logic on passed simple text
     """
     contextual PII detection - Microsoft Presidio.
     context and semantic is understood.
@@ -207,7 +207,7 @@ def redact_pdf_preserve_layout(input_path: str, output_path: str) -> bool:
         print(f"Detected PDF: {input_path}")
         
         # Open PDF
-        doc = fitz.open(input_path)
+        doc = fitz.open(input_path) #Edge case of incase fitz dont get a standardized pdf it will throw error and be caught in except block , left to be added 
         print(f"Number of Pages: {len(doc)}")
         
         total_redactions = 0
