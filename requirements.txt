@@ -22,7 +22,6 @@ pdf2image # For converting PDF pages to images top re-routing non-standard PDFs 
 
 # Standardized pdf Processing packages
 PyMuPDF
-fitz
 
 # Data Processing
 pandas
