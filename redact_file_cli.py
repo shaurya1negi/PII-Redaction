@@ -20,12 +20,16 @@ class PDFRedactionHandler:
         print(f"Processing: {input_path}")
         results = self.pipeline.process_document(input_path)
         if ext == '.pdf':
-            # Standardized PDF: processed with text_processor
-            if 'pdf_redacted_path' in results:
-                print(f"Redacted PDF saved at: {results['pdf_redacted_path']}")
+            # Check if we have a fully redacted PDF (text + faces)
+            if 'final_pdf_path' in results:
+                print(f"\n✓ Fully redacted PDF (text + faces): {results['final_pdf_path']}")
+                return results['final_pdf_path']
+            elif 'pdf_redacted_path' in results:
+                print(f"\n✓ Text-redacted PDF: {results['pdf_redacted_path']}")
+                print("ℹ Note: No faces detected or face redaction not applied")
                 return results['pdf_redacted_path']
             else:
-                print("PDF redaction failed.")
+                print("✗ PDF redaction failed.")
                 return None
         else:
             # Non-standardized (image) input
