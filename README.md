@@ -919,7 +919,8 @@ python3 redact_file_cli.py
 ### Key Technical Decisions
 
 1. **Presidio with Transformers**: Chosen for high accuracy in PII detection with contextual understanding
-2. **MTCNN for Face Detection**: Reliable multi-face detection with landmark support
+2. **MTCNN for Face Detection**: Reliable multi-face detection with landmark support### Key Technical Decisions
+
 3. **EasyOCR**: Multi-language support with GPU acceleration
 4. **PyMuPDF for PDFs**: Layout preservation while redacting
 5. **Modular Design**: Independent components for flexibility
@@ -963,7 +964,3 @@ For issues or questions:
 - **facenet-pytorch**: Face detection
 - **spaCy**: NLP processing
 - **PyMuPDF**: PDF manipulation
-
----
-
-**End of README**
