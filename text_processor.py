@@ -1,7 +1,7 @@
+#Contains logic for PII redaction in standardized pdf , any text detected by PyMuPDF is routed here for PII analysis
 import fitz  # PyMuPDF
 import spacy
 import re
-import os
 from typing import List
 from presidio_analyzer import AnalyzerEngine
 from presidio_analyzer.nlp_engine import NlpEngineProvider
@@ -16,6 +16,7 @@ analyzer = AnalyzerEngine(nlp_engine=nlp_engine)
 # spaCy fallback detector uses transformer model
 nlp = spacy.load(config.NLP_CONFIG['models'][0]['model_name'])
 
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 def detect_pii_contextual(text: str) -> List[str]: # Contains the PII contextual detection logic on passed text
     """
     contextual PII detection - Microsoft Presidio.
@@ -45,7 +46,8 @@ def detect_pii_contextual(text: str) -> List[str]: # Contains the PII contextual
                     pii_entities.append(entity_text)
         
         print(f"Presidio found {len(results)} entities, {len(pii_entities)} exceed high-confidence threshold")
-        
+    
+    #Bellow exceptional handling might be redundant
     except Exception as e:
         print(f"Presidio failure, spaCy fallback: {e}")
         # revert to spaCy detection
@@ -57,7 +59,11 @@ def detect_pii_contextual(text: str) -> List[str]: # Contains the PII contextual
     
     return list(set(pii_entities))  # Filter dupes
 
-def _is_common_word(word: str) -> bool:
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Extra Layer of validation on detect_pii_contextual output to filter out common words but introduces computation overhead .
+
+def _is_common_word(word: str) -> bool: 
     """Check if word is too common to be PII"""
     common_words = {
         'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'its', 'may', 'new', 'now', 'old', 'see', 'two', 'who', 'boy', 'did', 'man', 'men', 'age', 'any', 'big', 'end', 'far', 'got', 'let', 'put', 'run', 'top', 'try', 'use', 'way', 'win', 'yes', 'yet'
@@ -110,7 +116,7 @@ def _is_valid_pii_with_context(entity_text: str, entity_type: str, full_text: st
         return True
     
     elif entity_type == "DATE_TIME":
-        return True;
+        return True
     
     elif entity_type == "URL":
         # URLs if detected, are sensitive
@@ -128,6 +134,8 @@ def _is_valid_pii_with_context(entity_text: str, entity_type: str, full_text: st
     
     # include if basic checks pass
     return True
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def _fallback_spacy_detection(text: str) -> List[str]:
     """Enhanced spaCy-based detection as fallback - COMPREHENSIVE WITH CONTEXT"""
